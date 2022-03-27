@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,9 +9,13 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ReceiverApi.Core.Configurations;
+using ReceiverApi.Core.Services;
 
 namespace ReceiverApi
 {
@@ -30,6 +35,14 @@ namespace ReceiverApi
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ReceiverApi", Version = "v1"});
+            });
+            services.AddTransient<ChallengeService>();
+            services.AddSingleton(x => new AppConfiguration()
+            {
+                SigningCredentials =
+                    new SigningCredentials(
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("5WKYL7MDMRFY3Z2XDIYRLKPHZ4======")),
+                        SecurityAlgorithms.HmacSha256)
             });
         }
 

@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiverApi", "ReceiverApi\ReceiverApi.csproj", "{7FA8A9BC-97EF-4F1E-815E-30BD553EEC00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiverApi.Core", "ReceiverApi.Core\ReceiverApi.Core.csproj", "{73D4C624-48B6-4AA4-903F-100C79BF8C7D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{231EA958-DEC6-4080-9C20-A8AFBE8E54C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiverApi.Core.Tests", "ReceiverApi.Core.Tests\ReceiverApi.Core.Tests.csproj", "{23599CCB-CCC2-4B4F-9261-E45EFF84F030}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,16 @@ Global
 		{7FA8A9BC-97EF-4F1E-815E-30BD553EEC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FA8A9BC-97EF-4F1E-815E-30BD553EEC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FA8A9BC-97EF-4F1E-815E-30BD553EEC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D4C624-48B6-4AA4-903F-100C79BF8C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D4C624-48B6-4AA4-903F-100C79BF8C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D4C624-48B6-4AA4-903F-100C79BF8C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D4C624-48B6-4AA4-903F-100C79BF8C7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23599CCB-CCC2-4B4F-9261-E45EFF84F030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23599CCB-CCC2-4B4F-9261-E45EFF84F030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23599CCB-CCC2-4B4F-9261-E45EFF84F030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23599CCB-CCC2-4B4F-9261-E45EFF84F030}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{23599CCB-CCC2-4B4F-9261-E45EFF84F030} = {231EA958-DEC6-4080-9C20-A8AFBE8E54C0}
 	EndGlobalSection
 EndGlobal
