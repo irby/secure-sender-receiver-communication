@@ -86,6 +86,11 @@ namespace ReceiverApi.Core.Services
             {
                 throw new Exception(); // TODO: Change exception type
             }
+
+            if (long.Parse(result.Claims["exp"].ToString() ?? string.Empty) < (DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds)
+            {
+                throw new Exception();
+            }
             return result.Claims["message"].ToString();
         }
     }

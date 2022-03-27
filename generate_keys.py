@@ -20,7 +20,7 @@ def main():
     os.system("openssl genrsa -out %s/%s 2048" % (sender_api_keys_path, client_private_key_file_name))
     os.system("openssl rsa -in %s/%s -pubout > %s/%s" % (sender_api_keys_path, client_private_key_file_name, receiver_api_keys_path, client_public_key_name))
     
-    random_key = os.urandom(16)
+    random_key = os.urandom(64)
 
     os.system("echo '%s' > %s/%s" % (base64.b32encode(random_key).decode('utf-8'), receiver_api_keys_path, receiver_secret_key_name))
 
