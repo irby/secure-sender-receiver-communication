@@ -42,6 +42,10 @@
         <Link>keys/client.pub</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <Content Include="..\keys\receiver.secret.key">
+        <Link>keys/receiver.secret.key</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

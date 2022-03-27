@@ -23,6 +23,7 @@ namespace ReceiverApi.Core.Tests.Services
 
         private string _privateKey;
         private string _publicKey;
+        private string _secretKey;
         
         public ChallengeServiceTests()
         {
@@ -31,7 +32,7 @@ namespace ReceiverApi.Core.Tests.Services
             _serviceCollection.AddSingleton(x => new AppConfiguration()
             {
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes("5WKYL7MDMRFY3Z2XDIYRLKPHZ4======")),
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetSymmetricKey().Result)),
                     SecurityAlgorithms.HmacSha256)
             });
 
@@ -109,6 +110,14 @@ namespace ReceiverApi.Core.Tests.Services
             await using var privKey = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "keys", "client.key"),
                 FileMode.Open);
             var sr = new StreamReader(privKey);
+            return await sr.ReadToEndAsync();
+        }
+
+        private async Task<string> GetSymmetricKey()
+        {
+            await using var secretKey = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "keys", "receiver.secret.key"),
+                FileMode.Open);
+            var sr = new StreamReader(secretKey);
             return await sr.ReadToEndAsync();
         }
 

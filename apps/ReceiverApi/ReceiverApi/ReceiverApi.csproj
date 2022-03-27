@@ -12,4 +12,11 @@
       <ProjectReference Include="..\ReceiverApi.Core\ReceiverApi.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\keys\receiver.secret.key">
+        <Link>receiver.secret.key</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
