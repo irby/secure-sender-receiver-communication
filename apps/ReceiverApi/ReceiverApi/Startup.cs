@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ReceiverApi.Core.Configurations;
 using ReceiverApi.Core.Services;
+using ReceiverApi.Core.Services.Interfaces;
 
 namespace ReceiverApi
 {
@@ -37,13 +39,21 @@ namespace ReceiverApi
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ReceiverApi", Version = "v1"});
             });
             services.AddTransient<ChallengeService>();
+
+            using var keyFile = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "..", "keys", "receiver.secret.key"),
+                FileMode.Open);
+            var sr = new StreamReader(keyFile);
+            var key = sr.ReadToEnd();
+            
             services.AddSingleton(x => new AppConfiguration()
             {
                 SigningCredentials =
                     new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("5WKYL7MDMRFY3Z2XDIYRLKPHZ4======")),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                         SecurityAlgorithms.HmacSha256)
             });
+
+            services.AddTransient<IStorageService, LocalStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
