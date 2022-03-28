@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +52,7 @@ namespace SenderConsole
                     case "3":
                         token = null;
                         signedMessage = null;
-                        Console.WriteLine("Posting document");
+                        Console.WriteLine("Tokens cleared successfully.");
                         break;
                     case "q":
                     case "Q":

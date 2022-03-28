@@ -25,10 +25,4 @@
       </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="api_response.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>
