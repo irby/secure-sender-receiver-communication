@@ -47,7 +47,7 @@ namespace ReceiverApi.Core.Services
             rsa.ImportFromPem(publicKey);
             
             byte[] data = Encoding.UTF8.GetBytes(message);
-            byte[] signature = Convert.FromBase64String(encryptedMessage);
+            byte[] signature = Convert.FromBase64String(encryptedMessage.Replace(" ", "+"));
             bool isValid = rsa.VerifyData(data, 
                 signature, 
                 HashAlgorithmName.SHA256, 

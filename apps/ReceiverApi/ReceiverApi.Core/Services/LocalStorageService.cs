@@ -8,7 +8,8 @@ namespace ReceiverApi.Core.Services
     {
         public async Task<string> GetClientPublicKey(string clientId)
         {
-            await using var privateKeyFile = File.Open(Path.Combine(Directory.GetCurrentDirectory(), $"{clientId}.pub"), FileMode.Open);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "keys", $"{clientId}.pub");
+            await using var privateKeyFile = File.Open(path, FileMode.Open);
             var sr = new StreamReader(privateKeyFile);
             return await sr.ReadToEndAsync();
         }
