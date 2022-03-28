@@ -6,3 +6,4 @@ results.txt
 **/keys
 **/packages
 *.DotSettings.*
+**/apps/SenderConsole/SenderConsole.Core/api_response.txt

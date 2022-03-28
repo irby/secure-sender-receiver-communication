@@ -47,7 +47,7 @@ namespace ReceiverApi.Core.Services
             rsa.ImportFromPem(publicKey);
             
             byte[] data = Encoding.UTF8.GetBytes(message);
-            byte[] signature = Convert.FromBase64String(encryptedMessage);
+            byte[] signature = Convert.FromBase64String(encryptedMessage.Replace(" ", "+"));
             bool isValid = rsa.VerifyData(data, 
                 signature, 
                 HashAlgorithmName.SHA256, 
@@ -85,6 +85,11 @@ namespace ReceiverApi.Core.Services
             if (!result.IsValid)
             {
                 throw new Exception(); // TODO: Change exception type
+            }
+
+            if (long.Parse(result.Claims["exp"].ToString() ?? string.Empty) < (DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds)
+            {
+                throw new Exception();
             }
             return result.Claims["message"].ToString();
         }

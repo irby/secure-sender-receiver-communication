@@ -1,5 +1,7 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,15 +17,14 @@ namespace ReceiverApi.Core.Tests.Services
 {
     public class ChallengeServiceTests : IAsyncLifetime
     {
-        private IServiceCollection _serviceCollection;
-        private IServiceProvider _serviceProvider;
-        private ChallengeService _service;
+        private readonly IServiceCollection _serviceCollection;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ChallengeService _service;
         
-        private Mock<IStorageService> _mockStorageService;
+        private readonly Mock<IStorageService> _mockStorageService;
 
         private string _privateKey;
         private string _publicKey;
-        private string _secretKey;
         
         public ChallengeServiceTests()
         {
@@ -51,10 +52,11 @@ namespace ReceiverApi.Core.Tests.Services
         {
             var result = await _service.GenerateChallenge();
             Assert.NotNull(result.Message);
+            Assert.NotNull(result.Token);
         }
         
         [Fact]
-        public async Task ValidateClientMessage_WhenSignedMessageIsProvided_ReturnsTrue()
+        public async Task ValidateClientMessage_WhenValidSignedMessageIsProvided_ReturnsTrue()
         {
             _mockStorageService.Setup(p => p.GetClientPublicKey(It.IsAny<string>())).ReturnsAsync(_publicKey);
             
@@ -97,7 +99,20 @@ namespace ReceiverApi.Core.Tests.Services
             await Assert.ThrowsAsync<Exception>(() =>  _service.ValidateClientMessage("client", signedMessage, challenge.Token)); // TODO: Update exception type
         }
 
-        private async Task<string> GetClientPublicKey()
+        [Fact]
+        public async Task ValidateClientMessage_WhenTokenIsExpired_ThrowsExceptionAsync()
+        {
+            _mockStorageService.Setup(p => p.GetClientPublicKey(It.IsAny<string>())).ReturnsAsync(_publicKey);
+
+            var message = "hello";
+            var token = await GenerateSessionToken(message, DateTime.UtcNow.AddSeconds(-1));
+            
+            var signedMessage = SignMessageWithPrivateKey(message);
+
+            await Assert.ThrowsAsync<Exception>(() => _service.ValidateClientMessage("client", signedMessage, token));
+        }
+
+        private static async Task<string> GetClientPublicKey()
         {
             await using var pubKey = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "keys", "client.pub"),
                 FileMode.Open);
@@ -105,7 +120,7 @@ namespace ReceiverApi.Core.Tests.Services
             return await sr.ReadToEndAsync();
         }
         
-        private async Task<string> GetClientPrivateKey()
+        private static async Task<string> GetClientPrivateKey()
         {
             await using var privKey = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "keys", "client.key"),
                 FileMode.Open);
@@ -113,12 +128,30 @@ namespace ReceiverApi.Core.Tests.Services
             return await sr.ReadToEndAsync();
         }
 
-        private async Task<string> GetSymmetricKey()
+        private static async Task<string> GetSymmetricKey()
         {
             await using var secretKey = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "keys", "receiver.secret.key"),
                 FileMode.Open);
             var sr = new StreamReader(secretKey);
             return await sr.ReadToEndAsync();
+        }
+
+        private async Task<string> GenerateSessionToken(string message, DateTime expirationTime)
+        {
+            var appConfig = _serviceProvider.GetService<AppConfiguration>();
+            var claims = new[]
+            {
+                new Claim("message", message)
+            };
+
+            var token = new JwtSecurityToken("test", 
+                "test", 
+                claims, 
+                DateTime.UtcNow.AddSeconds(-10), 
+                expirationTime, 
+                appConfig!.SigningCredentials);
+            
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private string SignMessageWithPrivateKey(string message)
