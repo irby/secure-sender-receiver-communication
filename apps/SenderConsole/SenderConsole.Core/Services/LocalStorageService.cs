@@ -9,14 +9,14 @@ namespace SenderConsole.Core.Services
     {
         public async Task<string> GetClientPrivateKey(string clientId)
         {
-            await using var stream = File.Open(Path.Combine(Directory.GetCurrentDirectory(), $"{clientId}.key"), FileMode.Open);
+            await using var stream = File.Open(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "apps", "SenderConsole", "keys", $"{clientId}.key"), FileMode.Open);
             var sr = new StreamReader(stream);
             return await sr.ReadToEndAsync();
         }
 
         public async Task SaveApiResponse(string content)
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "SenderConsole.Core", "api_response.txt");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "apps", "SenderConsole", "SenderConsole.Core", "api_response.txt");
             // await File.WriteAllTextAsync(path, content);
             await using (StreamWriter Writer = new StreamWriter(
                 new FileStream(path, 
