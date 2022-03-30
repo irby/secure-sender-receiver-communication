@@ -11,7 +11,7 @@ FNULL = open(os.path.join(os.getcwd(), "results.txt"), "a")
 path_to_dotnet = "/mnt/c/Program Files/dotnet/dotnet.exe"
 path_to_api_response = os.path.join(os.getcwd(), "apps", "SenderConsole", "SenderConsole.Core", "api_response.txt")
 
-def read_api_response(expected_response):
+def read_api_response(context, expected_response):
     time.sleep(2)
     with open(path_to_api_response, "r") as f:
         result = json.loads(f.read())
@@ -24,9 +24,9 @@ def read_api_response(expected_response):
             return
         response = result.get('StatusCode')
         if(response != expected_response):
-            error('Failure. Expected value: ' + str(expected_response) + ' Actual value: ' + str(response))
+            error(context + ': Failure. Expected value: ' + str(expected_response) + ' Actual value: ' + str(response))
         else:
-            print('Pass')
+            print(context + ': Pass')
 
     f = open(path_to_api_response, "w")
     f.close()
@@ -45,6 +45,15 @@ def clear_tokens(proc):
 
 def main():
     subprocess.Popen("date", stdout=FNULL, stderr=FNULL)
+
+    print("generating new keys...")
+    subprocess.Popen(
+        ["python3", "generate_keys.py"],
+        cwd = os.getcwd(),
+        stdout=FNULL,
+        stderr=FNULL
+    )
+
     print('Starting API...')
     api = subprocess.Popen(
         [path_to_dotnet, "run", "--project ReceiverApi.csproj"],
@@ -52,7 +61,7 @@ def main():
         stdout=FNULL,
         stderr=FNULL
     )
-    time.sleep(5)
+    time.sleep(4)
     print('Starting sender console...')
 
     proc = subprocess.Popen(
@@ -64,22 +73,19 @@ def main():
         bufsize=1,
         universal_newlines=True
     )
-    time.sleep(6)
+    time.sleep(3)
     
     try:
         get_challenge(proc)
-        read_api_response(200)
+        read_api_response("get challenge", 200)
 
-        time.sleep(2)
         send_document(proc)
-        read_api_response(200)
+        read_api_response("send document", 200)
 
-        time.sleep(2)
         clear_tokens(proc)
 
-        time.sleep(2)
         send_document(proc)
-        read_api_response(401)
+        read_api_response("send document", 401)
 
     finally:
         api.terminate()
