@@ -25,11 +25,12 @@ namespace SenderConsole.Core.Services
 
         public async Task<Challenge> GetChallenge()
         {
+            Console.WriteLine("Inside get challenge");
             var response = await _httpClient.PostAsync("/api/challenge", null, CancellationToken.None);
             response.EnsureSuccessStatusCode();
             
             var body = await response.Content.ReadAsStringAsync();
-
+            
             var responseModel = new ReceiverResponse()
             {
                 StatusCode = (int) response.StatusCode,

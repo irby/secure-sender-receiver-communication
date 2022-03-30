@@ -38,7 +38,7 @@ namespace SenderConsole.Core.Services
                 Content = new StringContent("{\"message\": \"hello world!\"}", Encoding.UTF8, "application/json"),
                 RequestUri = new Uri($"https://localhost:5001/api/process{paramsString}")
             };
-            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            message.Headers.Authorization = new AuthenticationHeaderValue("Basic", token);
 
             var response = await _httpClient.SendAsync(message);
             var body = await response.Content.ReadAsStringAsync();
